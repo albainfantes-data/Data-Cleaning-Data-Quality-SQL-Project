@@ -469,7 +469,7 @@ FROM issue\_data;
 
 **1\. Data Quality Assessment**
 
-Identify missing values across all tables: A systematic review of missing values was performed across all tables using SQL queries, applying a consistent approach to assess date completeness. Only the query for the support\_tickets table is shown, as it is the only table where missing values were identified.
+<u>Identify missing values across all tables</u>: A systematic review of missing values was performed across all tables using SQL queries, applying a consistent approach to assess date completeness. Only the query for the support\_tickets table is shown, as it is the only table where missing values were identified.
 
 The dataset is largely complete, with no NULL values detected in most tables. The only exception is the resolved\_date column in the support\_tickets table, which contains 2,528 missing values. This may indicate gaps or inconsistencies in the ticket resolution process. 
 
