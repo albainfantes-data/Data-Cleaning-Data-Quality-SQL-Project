@@ -35,10 +35,10 @@
 
 *All queries used for the analysis are included in the SQL section for reproducibility.*  
       
-    **SQL QUERIES' CODES**
+ #   **SQL QUERIES' CODES**
 
-**1\.**  
-**Task:** Identify missing values across all tables  
+# **1\.**  
+# **Task:** Identify missing values across all tables  
 **Code:**
 
 SELECT   
@@ -50,7 +50,7 @@ SELECT
     SUM(CASE WHEN resolved\_date IS NULL THEN 1 ELSE 0 END) AS resolved\_date\_null  
 FROM support\_tickets;
 
-**Task:** Detect duplicate records  
+# **Task:** Detect duplicate records  
 **Code:**
 
 SELECT ticket\_id, COUNT(\*) AS occurrences  
@@ -59,7 +59,7 @@ FROM support\_tickets
 GROUP BY ticket\_id  
 HAVING COUNT(\*) \> 1;
 
-**Task:** Identify inconsistent categorical values  
+# **Task:** Identify inconsistent categorical values  
 **Code:**
 
 SELECT DISTINCT status  
@@ -67,7 +67,7 @@ FROM support\_tickets
 
 GROUP BY status;
 
-**Task:** Quantify the extent of data quality issues  
+# **Task:** Quantify the extent of data quality issues  
 **Code:**
 
 SELECT   
@@ -76,8 +76,8 @@ SELECT
     SUM(CASE WHEN resolved\_date IS NULL THEN 1 ELSE 0 END)\*100.0 / (COUNT(\*)) AS data\_quality\_issues\_rate  
 FROM support\_tickets;
 
-**2\.**  
-**Task:** Check referential integrity between tables  
+# **2\.**  
+# **Task:** Check referential integrity between tables  
 **Code:**
 
 SELECT c.customer\_id  
@@ -90,7 +90,7 @@ WHERE NOT EXISTS(
 
 GROUP BY c.customer\_id;
 
-**Task:** Detect duplicate records  
+# **Task:** Detect duplicate records  
 **Code:**
 
 SELECT o.status, COUNT(\*) AS orders\_without\_payment  
@@ -102,7 +102,7 @@ WHERE pa.order\_id IS NULL
 GROUP BY o.status  
 ORDER BY orders\_without\_payment;
 
-**Task:** Identify orphan records or mismatches  
+# **Task:** Identify orphan records or mismatches  
 **Code:**
 
 SELECT o.order\_id  
@@ -117,7 +117,7 @@ WHERE NOT EXISTS(
 
 GROUP BY o.order\_id;
 
-**Task:** Validate logical consistency  
+# **Task:** Validate logical consistency  
 **Code:**
 
 SELECT pa.payment\_id  
@@ -128,7 +128,7 @@ WHERE o.status \!= 'Completed'
 
 GROUP BY pa.payment\_id;
 
-**Task:** Negative amounts (orders/payments)  
+# **Task:** Negative amounts (orders/payments)  
 **Code:**
 
 SELECT o.order\_id, pa.payment\_id  
@@ -139,7 +139,7 @@ ON o.order\_id \= pa.order\_id
 GROUP BY o.order\_id, pa.payment\_id  
 HAVING pa.amount \< 0;
 
-**Task:** Payment dates before order dates  
+# **Task:** Payment dates before order dates  
 **Code:**
 
 SELECT pa.payment\_id, pa.payment\_date, o.order\_date  
@@ -150,7 +150,7 @@ ON pa.order\_id \= o.order\_id
 GROUP BY pa.payment\_id  
 HAVING julianday(pa.payment\_date) \< julianday(o.order\_date);
 
-**Task:** Unusual or inconsistent transaction patterns  
+# **Task:** Unusual or inconsistent transaction patterns  
 **Code:**
 
 SELECT o.order\_id, SUM(oi.quantity\*p.unit\_price) AS original\_order\_value, pa.amount  
@@ -165,7 +165,7 @@ ON oi.product\_id \= p.product\_id
 GROUP BY o.order\_id  
 HAVING SUM(oi.quantity\*p.unit\_price) \!= pa.amount;
 
-**Task:** Normalize categorical fields (payment status)  
+# **Task:** Normalize categorical fields (payment status)  
 **Code:**
 
 SELECT payment\_id,  
@@ -178,7 +178,7 @@ CASE LOWER(TRIM(status))
 END AS normalized\_payment\_status  
 FROM payments;
 
-**Task:** Ensure consistent formatting across fields (case, naming conventions) (order status)  
+# **Task:** Ensure consistent formatting across fields (case, naming conventions) (order status)  
 **Code:**
 
 SELECT order\_id,  
@@ -191,7 +191,7 @@ CASE
 END AS consistent\_formatting\_status  
 FROM orders;
 
-**Task:** Standardize key business fields for downstream analysis (text to numeric values, date standardization)  
+# **Task:** Standardize key business fields for downstream analysis (text to numeric values, date standardization)  
 **Code:**
 
 SELECT payment\_id,  
@@ -208,7 +208,7 @@ SELECT payment\_id,
 END AS clean\_payment\_date  
 FROM payments;
 
-**Task:** Handle missing values (replacing, flagging)  
+# **Task:** Handle missing values (replacing, flagging)  
 **Code:**
 
 SELECT ticket\_id,   
@@ -222,7 +222,7 @@ CASE
 END AS flag\_resolved\_date  
 FROM support\_tickets;
 
-**Task:** Correct or flag invalid numeric values  
+# **Task:** Correct or flag invalid numeric values  
 **Code:**
 
 SELECT   
@@ -237,7 +237,7 @@ SELECT
     END AS flag\_unit\_price  
 FROM products;
 
-**Task:** Resolve duplicates where necessary  
+# **Task:** Resolve duplicates where necessary  
 **Code:**
 
 WITH duplicates AS(  
@@ -254,7 +254,7 @@ WHERE rowid IN(
     WHERE count\_product\_id \> 1  
 );
 
-**Task:** Clean customers  
+# **Task:** Clean customers  
 **Code:**
 
 SELECT   
@@ -301,7 +301,7 @@ SELECT
     END AS flag\_signup\_date  
 FROM customers;
 
-**Task:** Clean orders  
+# **Task:** Clean orders  
 **Code:**
 
 SELECT   
@@ -337,7 +337,7 @@ SELECT
     END AS flag\_sales\_channel  
 FROM orders;
 
-**Task:** Clean payments  
+# **Task:** Clean payments  
 **Code:**
 
 SELECT   
@@ -375,7 +375,7 @@ SELECT
     END AS flag\_status  
 FROM payments;
 
-**Task:** Number and % of issues per table  
+# **Task:** Number and % of issues per table  
 **Code:**
 
 WITH number\_issues AS (  
@@ -415,7 +415,7 @@ SELECT
     CASE WHEN flag\_signup\_date \= 'Invalid' THEN 'Issue' END AS issues\_signup\_date  
 FROM "Clean customers";
 
-**Task:** Impacted records  
+# **Task:** Impacted records  
 **Code:**
 
 SELECT   
