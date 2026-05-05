@@ -469,21 +469,25 @@ FROM issue\_data;
 
 **1\. Data Quality Assessment**
 
-<u>Identify missing values across all tables</u>: A systematic review of missing values was performed across all tables using SQL queries, applying a consistent approach to assess date completeness. Only the query for the support\_tickets table is shown, as it is the only table where missing values were identified.
+Identify missing values across all tables: A systematic review of missing values was performed across all tables using SQL queries, applying a consistent approach to assess date completeness. Only the query for the support\_tickets table is shown, as it is the only table where missing values were identified.
 
 The dataset is largely complete, with no NULL values detected in most tables. The only exception is the resolved\_date column in the support\_tickets table, which contains 2,528 missing values. This may indicate gaps or inconsistencies in the ticket resolution process. 
 
 No cleaning actions were applied in this field, as the missing values may reflect ongoing or unresolved tickets. It is assumed that NULL values in resolved\_date correspond to tickets that have not yet been closed, though this should be validated with business context.
 
+
 Detect duplicate records (e.g., emails, customers): A systematic review of duplicate records was conducted across all tables, focusing on key identifiers such as emails and customer IDs. The same SQL-based approach was applied throughout; however, only the query for the support\_tickets table is shown for clarity, as it is representative of the method used. 
 
 The analysis found no duplicate values in any table, including the support\_tickets table. This indicates a high level of data integrity and suggests that there are no operational discrepancies related to duplicated records.
+
 
 Identify inconsistent categorical values (e.g., status fields): Categorical values were analyzed across key fields, including customer countries, order status, sales channels, payment status, product categories, and support ticket issue types and statuses. The same SQL-based approach was applied to all fields; however, only the query for the support\_tickets status column is shown for clarity, as it is representative of the method used.
 
 The analysis found no inconsistencies in any of the categorical values across the examined fields. This indicates that the dataset maintains strong integrity with respect to category-level data, and there are no discrepancies that could affect operational reporting or analysis.
 
+
 Quantify the extent of data quality issues (% where possible): The extent of data quality issues was quantified across all tables. The only issue identified is missing values in the resolved\_date column of the support\_tickets table, representing 7.2% of the table’s records. All other tables and columns were fully populated, resulting in a 0% data quality issue rate for duplicates and categorical values. Overall, this indicates a relatively low level of data quality issues; however, further investigation is recommended to determine the underlying causes of the missing values in support\_tickets and identify potential improvements.
+
 
 **2\. Data Integrity Validation**
 
@@ -493,11 +497,14 @@ No issues were found between orders and payments, indicating strong consistency 
 
 Overall, the results suggest generally stable relationships, but the high proportion of customers without orders and the use of support tickets may require further investigation to determine whether this reflects valid business behavior or underlying data or operational issues.
 
+
 Identify orphan records or mismatches: A series of business logic and data consistency checks were performed to identify orphan records, mismatches, and potential operational inconsistencies across key tables.
+
 
 Initial checks for orphan records and referential mismatches across orders, payments, and related entities returned no results, indicating strong structural integrity and consistent relationships between core tables. Similarly, validation of support ticket logic (e.g., status consistency and lifecycle completeness) did not reveal any anomalies.
 
 However, the timeline sanity check identified multiple inconsistencies between order\_date and payment\_date, where certain orders were recorded with an order date later than the corresponding payment date. This suggests potential data entry issues or system-level timestamp inconsistencies that may require further investigation.
+
 
 Validate logical consistency (e.g., payments without orders): Logical consistency checks were performed to evaluate alignment between orders and payment records.
 
@@ -506,6 +513,7 @@ The analysis identified a significant number of payments (7,456) associated with
 Additionally, a check for multiple payments per order did not return any results, indicating that each order is associated with a single payment record and no duplication issues were detected.
 
 Overall, while payment duplication does not appear to be an issue, the discrepancy between payment records and order completion status suggests potential data consistency or operational timing issues that may require further investigation.
+
 
 **3\. Anomaly Detection**
 
@@ -519,21 +527,25 @@ Detect invalid or illogical values, including:
 * Unusual or inconsistent transaction patterns: Transaction consistency was evaluated by comparing order values with corresponding payment amounts. The analysis identified widespread discrepancies between recorded order values and payment amounts, indicating potential inconsistencies in transaction recording that require further investigation.  
   Additionally, 602 orders were found with a ‘Cancelled’ order status but a ‘Paid’ payment status. This inconsistency suggests possible issues in order lifecycle tracking or payment processing logic, warranting further review.
 
+
 **4\. Standardization**
 
 Normalize categorical fields (e.g., order status, payment status): Categorical fields were reviewed for inconsistencies in formatting and value representation. No significant discrepancies were identified, indicating that category values were already consistently maintained across the dataset.
 
 As part of the validation process, normalization logic was implemented using conditional expressions (CASE) for the payment status field to ensure consistency and demonstrate standardized handling of categorical data.
 
+
 Ensure consistent formatting across fields (case, naming conventions): Categorical fields were reviewed to ensure consistent casing, spacing, and naming conventions across the dataset. No significant inconsistencies were identified, indicating that values were already standardized.
 
 As part of validation, formatting logic was applied to the order status field to confirm consistency and demonstrate standardized handling.
+
 
 Standardize key business fields for downstream analysis: Although no major formatting inconsistencies were identified during initial validation, key business fields were standardized as part of the final data preparation layer.
 
 Payment amounts were converted from text to numeric format using CAST and REPLACE to ensure correct aggregation and calculation. Additionally, date fields were standardized into a consistent YYYY-MM-DD format using string manipulation functions (e.g., SUBSTR) to align all records to a unified temporal structure.
 
 These transformations were implemented within a single SQL view to ensure a clean, analysis-ready dataset for downstream use. 
+
 
 **5\. Data Cleaning & Correction**
 
@@ -543,11 +555,13 @@ Additionally, a flag column was created to preserve analytical visibility, categ
 
 No other missing values were identified across the dataset. These gaps may reflect incomplete records or unresolved cases and may require further investigation.
 
+
 Correct or flag invalid numerical values: Numeric fields were validated to identify potential formatting or data integrity issues. The unit\_price field was used as a representative example, where values were standardized by trimming spaces and replacing inconsistent decimal delimiters before converting to numeric format.
 
 In addition, validation logic was implemented to flag invalid entries, including NULL values, empty strings, non-numeric characters (detected using pattern matching), and inconsistent formatting. Records were classified as ‘Correct’ or ‘Invalid’ to support data quality monitoring.
 
 No invalid values were ultimately identified in the dataset, indicating that numeric fields were consistently structured. 
+
 
 Resolve duplicates where necessary: The dataset was reviewed for duplicate records using primary key fields, with no duplicates identified across the tables.
 
@@ -555,9 +569,11 @@ As part of the validation process, duplicate detection logic was implemented on 
 
 This confirms that the dataset maintains strong entity integrity while ensuring that appropriate mechanisms are in place to detect and resolve duplicates when necessary.
 
+
 Fix inconsistencies identified in previous steps: All previously identified areas were reviewed and validated. No additional inconsistencies requiring correction were found, as data quality checks confirmed that fields were consistently structured and aligned across the dataset.
 
 This indicates that the dataset maintains a high level of integrity following the applied validation and standardization steps.
+
 
 **6\. Create Clean Data Models** 
 
