@@ -26,7 +26,7 @@
 - **Example view queries:**
 
 ***1\. View:** Normalized categorical fields (payment status)*
-![Normalized payment status](screenshots/normalized_payments_categorical_fields.png)
+![Normalized payment status](screenshots/normalized_payments_categoric_fields.png)
 
 ***2\. View:** Clean payments*
 ![Clean payments](screenshots/clean_payments_view.png)
